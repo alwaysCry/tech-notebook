@@ -1,0 +1,40 @@
+<template>
+	<svg width="240" height="160">
+		<defs>
+			<pattern
+				id="p3"
+				width="0.4"
+				height="0.4"
+				patternContentUnits="userSpaceOnUse"
+			>
+				<rect width="20" height="20" fill="#069" x="0" y="0" />
+			</pattern>
+			<pattern
+				id="p4"
+				width="0.4"
+				height="0.4"
+				patternContentUnits="objectBoundingBox"
+			>
+				<rect width="0.2" height="0.2" fill="#069" x="0" y="0" />
+			</pattern>
+		</defs>
+		<rect
+			width="100"
+			height="100"
+			x="10"
+			y="30"
+			stroke="#000"
+			stroke-width="2"
+			fill="url(#p3)"
+		/>
+		<rect
+			width="100"
+			height="100"
+			x="120"
+			y="30"
+			stroke="#000"
+			stroke-width="2"
+			fill="url(#p4)"
+		/>
+	</svg>
+</template>

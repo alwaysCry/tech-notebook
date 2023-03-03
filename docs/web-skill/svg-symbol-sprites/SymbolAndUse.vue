@@ -1,0 +1,7 @@
+<template>
+	<svg viewBox="0 0 30 10">
+		<circle id="myCircle" cx="5" cy="5" r="4" stroke="blue" />
+		<use href="#myCircle" x="10" fill="blue" />
+		<use href="#myCircle" x="20" fill="white" stroke="red" />
+	</svg>
+</template>

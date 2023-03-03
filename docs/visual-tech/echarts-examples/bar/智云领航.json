@@ -1,0 +1,102 @@
+{
+	"网络部今日支撑人员": [
+		{ "area": "省公司", "name": "周鹏", "phone": "135-8870-9977" },
+		{ "area": "杭州", "name": "吴晗", "phone": "157-1579-4390" },
+		{ "area": "温州", "name": "陈征", "phone": "187-5775-7710" },
+		{ "area": "丽水", "name": "叶芳顺", "phone": "188-0578-9696" },
+		{ "area": "台州", "name": "顾仁龙", "phone": "188-6999-2789" },
+		{ "area": "宁波", "name": "韩刚刚", "phone": "137-7713-7525" },
+		{ "area": "衢州", "name": "陈英健", "phone": "136-7571-9793" },
+		{ "area": "金华", "name": "雷睿", "phone": "139-5799-0649" },
+		{ "area": "嘉兴", "name": "庞晓伟", "phone": "139-5739-0772" },
+		{ "area": "湖州", "name": "费云", "phone": "135-8793-6008" },
+		{ "area": "舟山", "name": "张珀鸣", "phone": "188-0680-1619" },
+		{ "area": "绍兴", "name": "劳少育", "phone": "138-6751-4040" }
+	],
+	"地市订购Top5": [
+		{
+			"name": "温州",
+			"clientValue": 480,
+			"productValue": 280
+		},
+		{
+			"name": "丽水",
+			"clientValue": 300,
+			"productValue": 180
+		},
+		{
+			"name": "台州",
+			"clientValue": 200,
+			"productValue": 300
+		},
+		{
+			"name": "衢州",
+			"clientValue": 230,
+			"productValue": 160
+		},
+		{
+			"name": "金华",
+			"clientValue": 200,
+			"productValue": 120
+		}
+	],
+	"产品资产防护数": [
+		{ "label": "堡垒机", "value": 3975 },
+		{ "label": "主机安全", "value": 2157 },
+		{ "label": "日志审计", "value": 3174 },
+		{ "label": "防火墙", "value": 1395 },
+		{ "label": "入侵防护", "value": 1395 },
+		{ "label": "WAF", "value": 179 },
+		{ "label": "数据库审计", "value": 753 },
+		{ "label": "主机风险扫描", "value": 682 }
+	],
+	"防护资产总数Top5客户": [
+		{ "label": "大数据局城市管理指挥中心", "value": 133 },
+		{ "label": "丽水市大数据发展管理局", "value": 123 },
+		{ "label": "大数据局移动办公", "value": 120 },
+		{ "label": "丽水经济技术开发区管委会办公室", "value": 116 },
+		{ "label": "丽水市莲都区大数据发展中心", "value": 105 }
+	],
+	"攻击防护事件数Top5客户": [
+		{
+			"name": "温州市邮政服务局",
+			"value": 2011515,
+			"progressProp": {
+				"rgb": [255, 138, 21],
+				"rate": 1
+			}
+		},
+		{
+			"name": "仙居县人民政府办公室",
+			"value": 1886202,
+			"progressProp": {
+				"rgb": [253, 199, 59],
+				"rate": 0.94
+			}
+		},
+		{
+			"name": "温岭市综合行政执法局",
+			"value": 1634947,
+			"progressProp": {
+				"rgb": [128, 213, 255],
+				"rate": 0.81
+			}
+		},
+		{
+			"name": "安吉县人民法院",
+			"value": 1420575,
+			"progressProp": {
+				"rgb": [0, 127, 255],
+				"rate": 0.79
+			}
+		},
+		{
+			"name": "舟山日报社",
+			"value": 1414619,
+			"progressProp": {
+				"rgb": [0, 127, 255],
+				"rate": 0.77
+			}
+		}
+	]
+}
