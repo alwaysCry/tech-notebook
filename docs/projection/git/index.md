@@ -99,6 +99,10 @@
 
   -`-<N>`：仅列出最近的 N 条提交
 
-  - `--since`/`--after`：列出指定时间（`yyyy-mm-dd`，下同）之后的提 i 交
+  - `--since`/`--after`：列出指定时间（`yyyy-MM-dd hh:mm:ss`，下同）之后的提交
 
   - `--until`/`--before`：列出指定时间之前的提交
+
+  - `--author`：列出指定作者的提交
+
+  - `--no-merges`：排除合并类型的提交
