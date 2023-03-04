@@ -34,9 +34,25 @@
 
   - 已修改（modified）
 
-## 常用设置
+## 基本设置
+
+- Git 具有以下配置文件，按优先级从高到低分别对应`git config`命令的不同选项：
+
+  - `.git/config`：仓库级配置，对应默认或`--local`选项（须在对应工作目录下）
+
+  - `~/.gitconfig`或`~/.config/git/config`：用户级配置（适用其所有仓库），对应`--global`选项
+
+  - `/etc/gitconfig`：系统级配置（含所有用户），对应`--system`选项
+
+- 设置默认编辑器，按优先级高到低：
+
+  - 通过`git config core.editor`设置
+
+  - 由 Shell 环境变量`EDITOR`指定
 
 ## 常用命令
+
+<!-- - `git config`：读取或设置 Git 配置 -->
 
 - `git add <file>`：将指定文件添加至（待）下一次提交中（`<file>`为目录则递归处理其下所有文件），根据文件的不同状态：
 
@@ -76,3 +92,13 @@
   - `-f`/`--fore`：已注册改动文件的也将被删除（其注册于暂存区的改动将替换为已删除）
 
   - `--cached`：仅在暂存区中将文件注册删除，工作目录中仍保留（如一些本该`.gitignore`的文件）
+
+- `git mv <src> <dest>`：移动（重命名）文件，相当于依次执行了：`mv <src> <dest>`、`git rm <src>`、`git add <dest>`
+
+- `git log`：按时间从后往前列出所有提交
+
+  -`-<N>`：仅列出最近的 N 条提交
+
+  - `--since`/`--after`：列出指定时间（`yyyy-mm-dd`，下同）之后的提 i 交
+
+  - `--until`/`--before`：列出指定时间之前的提交
