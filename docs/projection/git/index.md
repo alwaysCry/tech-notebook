@@ -136,6 +136,10 @@ TODO：了解 Git 别名
 
   - 定制输出内容/格式：
 
+    - `--oneline`：等价于`--pretty=oneline --abbrev-commit`
+
+    - `--abbrev-commit`：仅输出提交哈希的头几位而非完整 40 位
+
     - `-p/--patch`：展示每次提交引入的差异
 
     - `--stat`：附带每次提交的简略统计信息
@@ -182,10 +186,10 @@ Git 支持两种标签：
 
 - `git branch <branch_name>`：创建新分支
 
+- `git branch -d <branch_name>...`：删除指定分支
+
 - `git checkout <branch_name>`：切换到另一分支
 
   - `-b`：若目标分支不存在，则先创建
 
 - `git merge <branch_name>`：将当前分支与目标分支合并
-
-  this is a shit
