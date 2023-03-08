@@ -116,11 +116,19 @@ TODO：了解 Git 别名
 
 - `git mv <src> <dest>`：移动（重命名）文件，相当于依次执行了：`mv <src> <dest>`、`git rm <src>`、`git add <dest>`
 
-- `git log`：按时间从后往前列出所有提交，以下按不同类型区分：
+- `git log [<commit>...]`：按时间降序列出自指定提交（默认当前所在提交）向下的提交链
+
+  - 符号规则：
+
+    - `<commit>`可为提交哈希、分支名、或`HEAD`
+
+    - 若`<commit>`以`^`开头，则自其以下的提交链将被排除
+
+    - `git log ^<commit1> <commit2>`可简写为`git log <commit1>..<commit2>`
 
   - 限制输出长度：
 
-    - `-<N>`：仅列出最近的 N 条提交
+    - `-<N>`：仅列出最近的 N 条
 
     - `-S`：列出增减了指定字符内容的提交
 
