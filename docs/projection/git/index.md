@@ -168,6 +168,8 @@ Git 支持两种标签：
 
 相关命令：
 
+- `git tag [-l] [<pattern...>]`：列出已有标签
+
 - `git tag <tag_name> [<commit_hash>]`：创建轻量级标签，默认给 HEAD 所指提交
 
   - `-a`：创建附注标签
@@ -176,12 +178,14 @@ Git 支持两种标签：
 
 - `git tag -d <tag_name>...`：删除指定标签
 
-- `git tag -l [<pattern...>]`：列出已有标签
-
 ### 分支管理
 
 - `git branch <branch_name>`：创建新分支
 
 - `git checkout <branch_name>`：切换到另一分支
 
-  `-b`：若目标分支不存在，则先创建
+  - `-b`：若目标分支不存在，则先创建
+
+- `git merge <branch_name>`：将当前分支与目标分支合并
+
+  this is a shit
