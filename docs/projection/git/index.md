@@ -71,6 +71,8 @@ TODO：了解 Git 别名
 
   - 由 Shell 环境变量`EDITOR`指定
 
+- 设置命令别名：若完整命令过长，可考虑为其设置别名，如：`git config --global alias.[alias] [commit]`。注：此处`[commit]`无`git`开头
+
 ## 常用命令
 
 - `git add <file>`：将指定文件添加至（待）下一次提交中（`<file>`为目录则递归处理其下所有文件），根据文件的不同状态：
