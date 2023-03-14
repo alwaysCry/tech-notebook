@@ -232,6 +232,8 @@ Git 支持两种标签：
 
   - `--keep-index`：只贮藏未注册改动，暂存区不变（工作区被还原为最近注册时状态）
 
+  - `--include-untracked`：包含未跟踪文件
+
 - `git stash list`：按从新到旧列出栈中所有贮藏
 
 - `git stash drop [<stash>]`：移除指定贮藏（默认最新的）
