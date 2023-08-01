@@ -1,4 +1,17 @@
 {
-	"cSpell.words": ["PIXI", "vuepress"],
-	"prettier.printWidth": 80
+	"cSpell.words": [
+		"pipefail",
+		"PIXI",
+		"styl",
+		"vuepress"
+	],
+	"prettier.printWidth": 80,
+	"editor.fontFamily": "'Cascadia Mono'",
+	"editor.codeLensFontFamily": "'Cascadia Mono'",
+	"editor.codeLensFontSize": 13,
+	"editor.fontSize": 13,
+	"markdown.preview.fontFamily": "'Cascadia Mono'",
+	"[markdown]": {
+		"editor.minimap.enabled": false
+	}
 }

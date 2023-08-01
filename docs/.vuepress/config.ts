@@ -13,6 +13,7 @@ export default defineUserConfig({
 	theme: defaultTheme({
 		sidebar: [
 			"/temp-note",
+			"collection-and-inspiration",
 			"/common-handwriting-function",
 			{
 				text: "数据结构与算法",
@@ -28,6 +29,48 @@ export default defineUserConfig({
 					"/network/tcp",
 					"/network/http2",
 				],
+			},
+			{
+				text: "前端基础",
+				collapsible: true,
+				children: ["/browser/html"],
+			},
+			{
+				text: "前端工程化",
+				collapsible: true,
+				children: [
+					"/projection/yarn",
+					"/projection/vite",
+					"/projection/packagejson",
+					"/projection/tools-compare",
+					"/projection/postcss",
+					"/projection/overview",
+					"/projection/ts-collection",
+				],
+			},
+			{
+				text: "Web框架",
+				collapsible: true,
+				children: [
+					{
+						text: "Vue2 全解析",
+						children: [
+							"/framework/vue2-analysis/project-overview",
+							"/framework/vue2-analysis/render-overview",
+							"/framework/vue2-analysis/componentization",
+						],
+					},
+					"/framework/vue2-diff",
+					"/framework/vue3-reactive",
+					"/framework/react-overview",
+					"/framework/react-diff",
+					"/framework/vue-react-key",
+				],
+			},
+			{
+				text: "Web API",
+				collapsible: true,
+				children: ["/web-api/web-component"],
 			},
 			{
 				text: "面试題集錦",
@@ -47,22 +90,32 @@ export default defineUserConfig({
 				],
 			},
 			{
-				text: "项目工程化",
+				text: "DevOps",
 				collapsible: true,
 				children: [
-					"/projection/packagejson",
-					"/projection/git",
-					"/projection/tools-compare",
-					"/projection/postcss",
-					"/projection/overview",
-					"/projection/ts-collection",
+					"/devops/linux",
+					"/devops/bash",
+					"/devops/cmd",
+					"/devops/curl",
+					"/devops/git",
+					{
+						text: "Docker",
+						children: [
+							"/devops/docker/conception",
+							"/devops/docker/image",
+							"/devops/docker/overview",
+							"/devops/docker/basic-ops",
+							"/devops/docker/registry",
+							"/devops/docker/network",
+							"/devops/docker/dockerfile",
+						],
+					},
 				],
 			},
 			{
 				text: "生产力/调试工具及技术",
 				collapsible: true,
 				children: [
-					"/debug/curl",
 					"/debug/chrome-debug-skill",
 					"/debug/vscode-web-debugger",
 					"/debug/chrome-devtool-debug-android",
@@ -131,25 +184,7 @@ export default defineUserConfig({
 					"/web-skill/css-inline-svg",
 				],
 			},
-			{
-				text: "Web框架",
-				collapsible: true,
-				children: [
-					{
-						text: "Vue2 全解析",
-						children: [
-							"/framework/vue2-analysis/project-overview",
-							"/framework/vue2-analysis/render-overview",
-							"/framework/vue2-analysis/componentization",
-						],
-					},
-					"/framework/vue2-diff",
-					"/framework/vue3-reactive",
-					"/framework/react-overview",
-					"/framework/react-diff",
-					"/framework/vue-react-key",
-				],
-			},
+
 			{
 				text: "SVG研究之路",
 				collapsible: true,
@@ -203,22 +238,14 @@ export default defineUserConfig({
 				],
 			},
 			{
-				text: "DevOps",
+				text: "通达信",
 				collapsible: true,
-				children: [
-					{
-						text: "Docker",
-						children: [
-							"/devops/docker/conception",
-							"/devops/docker/image",
-							"/devops/docker/overview",
-							"/devops/docker/basic-ops",
-							"/devops/docker/registry",
-							"/devops/docker/network",
-							"/devops/docker/dockerfile",
-						],
-					},
-				],
+				children: ["/tdx/picker-and-indicator", "/tdx/function-system"],
+			},
+			{
+				text: "技术分析",
+				collapsible: true,
+				children: ["/tech-analysis"],
 			},
 		],
 	}),

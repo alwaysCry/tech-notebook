@@ -1,18 +1,146 @@
-# 琐碎技术细节收纳
+# 临时收纳处
+
+## Vscode task 功能
+
+部分任务会被自动检测，如 npm scripts、tsc 相关命令等。在命名面板中输入`run tasks`后便会罗列
+
+否则便需在`.vscode/task.json#tasks`数组中添加自定义任务配置，其每一项均对应一项任务
+
+大部 JS/TS 项目下的任务都会以 npm scripts 的形式存在，需要完全自定义的场景很少
+
+自定义任务常用任务配置项：
+
+- label：显示在用户界面的任务名称
+
+- type：任务类型。对自定义任务而言，可选值唯有`shell`或`process`
+
+- command：实际执行的指令
+
+- group：定义任务组，可选值`test`、`build`、`none`。前二者对应任务通过命令面板中输入`run <group> tasks`找到
+
+## 关于 ts-node
+
+（局部）安装 ts-node 后，可通过以下方式执行 ts 文件：
+
+- 通过 ts-node CLI，此时所有 flags 都将作为前者配置项，而 node flags 需要通过环境变量透传，例如：`NODE_OPTIONS='--trace-deprecation --abort-on-uncaught-exception' ts-node ./index.ts`
+
+- 通过 node CLI，如：`node -r ts-node/register <ts-file>`或`NODE_OPTIONS="-r ts-node/register" node <ts-file>`。此时 ts-node 配置须在项目根目录的`tsconfig.json#ts-node`中被指定，后者支持大多数常用选项
+
+另：ts-node CLI 的 flags 必须在入口脚本之前被指定
+
+常用配置项：
+
+- transpileOnly：默认 false
+
+- typeCheck：与 transpileOnly 相反，默认 true
+
+- compiler：指定 Typescript 编译器，默认为 typescript
+
+- transpiler：指定三方转译器，用于执行无类型检测的转译
+
+- files：默认 false。于启动时读取 tsconfig.json 中的 files、include、exclude 项，可用于避免部分类型检查错误。[参见](https://typestrong.org/ts-node/docs/troubleshooting#missing-types)
+
+### vscode debug 配置
+
+```json
+// .vscode/launch.json
+{
+	"configurations": [
+		{
+			"type": "node",
+			"request": "launch",
+			"name": "Launch Program",
+			"runtimeArgs": ["-r", "ts-node/register"],
+			"args": ["${workspaceFolder}/<path-to-entrypoint>"] // 关键
+		}
+	]
+}
+```
+
+## 在 vscode 中调试 node 项目
+
+vscode 支持两种调试类型：attach 和 launch
+
+调试相关配置位于项目根目录`.vscode/launch.json#configurations`数组中，每项均对应一套独立配置
+
+通过以下方式执行调试：
+
+- 在命令面板中输入`select and start debugging`后选择相应的调试配置
+
+- 按 F5 使用最近配置开始调试
+
+以下配置项适用于全部调试类型：
+
+- outFiles、resolveSourceMapLocations：[参见](https://code.visualstudio.com/docs/nodejs/nodejs-debugging#_source-maps)
+
+- timeout
+
+- stopOnEntry
+
+- smartStep：那些生成而来的，未被 sourcemap 覆盖的 js 代码将被 debugger 跳过
+
+- skipFiles：用 glob patterns 指定调试过程中需被跳过的文件。例如：
+
+  - `"<node_internals>/**"`：跳过所有 node.js 标准库
+
+  - `${workspaceRoot}/node_modules/**`：跳过所有三方库
+
+以下配置适用于 launch 模式：
+
+- program：待调试的 node.js 源文件路径。注意不要在使用 npm、ts-node 等 code runner 时设置
+
+## Vscode Remote Linux 的问题
+
+不要在 Vscode Remote 的 Linux（含 WSL）`~/.bashrc`中设置`set -u`，否则启动内嵌终端时将报错（如下），且部分功能受限：
+
+```sh
+bash: VSCODE_ENV_REPLACE: unbound variable
+bash: VSCODE_ENV_PREPEND: unbound variable
+bash: VSCODE_ENV_APPEND: unbound variable
+bash: HISTCONTROL: unbound variable
+bash: __vsc_history_verify: unbound variable
+bash: PROMPT_COMMAND: unbound variable
+bash: __vsc_original_prompt_command: unbound variable
+```
+
+## Vscode 内嵌 terminal 相关问题
+
+`` Ctrl + ` ``或`` Ctrl + Shift + ` ``打开内嵌 terminal 时的工作目录即位于项目根目录，前提时不要在诸如`~/.bash_profile`中添加类似`cd <path>`的指令
+
+## Node.js ESM 模式下导入 JSON
+
+当项目`package.json#type`为`module`时，导入 JSON 须增加导入断言。形如：
+
+- ```js
+  import content from 'file.json assert {type: "json"}
+  ```
+
+- ```js
+  /* 或使用或动态导入 */
+  const content = await import("./file.json", {
+  	assert: { type: "json" },
+  });
+  ```
+
+注意：
+
+- 必须为默认导入，而非具名导入
+
+- 将直接得到解析后的 JS 对象
 
 ## 常见希腊字母
 
+- delta（δ）：变化量、屈光度、一元二次方程中的判别式
+- upsilon（υ）：位移
+- iota（ι ℩）：微小、一点
+- sigma（σ ς）：总和、表面密度、跨导、正应力
+- theta（θ）：角度、温度
 - alpha（α）：角度、系数、角加速度
 - beta（β）：角度、磁通系数、系数
 - gamma（γ）：角度、电导系数、比热容比
-- delta（δ）：变化量、屈光度、一元二次方程中的判别式
 - epsilon（ε）：对数之基数、介电常数
 - zeta（ζ）：系数、方位角、阻抗、相对粘度
-- theta（θ）：角度、温度
-- iota（ι ℩）：微小、一点
 - lambda（λ）：体积、波长、导热系数
-- sigma（σ ς）：总和、表面密度、跨导、正应力
-- upsilon（υ）：位移
 - phi（φ）：角、磁通、透镜焦度、热流量
 - psi（ψ）：角速、介质电通量
 - omega（ω）：角速度、欧姆、交流电的电角度
@@ -33,18 +161,6 @@ Object.defineProperty(Array.prototype, "fnName", {
 :::warning 注意
 不可用该方式重复添加同一属性
 :::
-
-## 关于 `<button>` 的 type
-
-`<button>` 的 type 特性具有三个可选值：submit（默认）、reset、button，因此在表单中若不想附带默认行为，就指定 `type="button"`
-
-## 关于 `<a>` 元素
-
-- `<a href=""></a>` 点击后刷新当前页
-- `<a href="#"></a>` 点击后回到页面顶部
-- `<a href="Javascript:void(0)"></a>` 点击无任何效果，相较 `<a href="Javascript:;"></a>` 的合理化写法
-
-后两条也可用作占位，表示链接需动态生成，稍后才能赋值
 
 ## arguments 变量
 
@@ -240,3 +356,50 @@ PC 端获取元素文本内容通常：`var text = dom.innerText || dom.textCont
 7. IE 下 innerText 表现与 textContent 一致（不随规范），即上面 3、4 在 IE 下不会有差异；另外 IE 中更改 innerText 将会移除其子节点，并永久销毁所有子文本节点，无法再将节点插入任何其他元素或同一元素中
 
 结论：获取或改变文本内容更推荐 textContent（除兼容性考虑）
+
+## 重排与重绘
+
+在 devtools -> performance 录制结果分析中的 Event Log 页签可通过 layout 或 paint 关键字筛选出重排/重绘的触发频次
+
+- 重排（Layout）：元素的几何属性被改变，浏览器需重新计算且其他元素的几何属性或位置也可能受影响。触发因素：
+
+  - 增/删可见 DOM 元素、
+  - 改变元素位置
+  - 改变元素尺寸（外边距、内边距、边框、高度等）、内容（文本改变、图片被替换为另一不同尺寸的）
+  - 浏览器窗口尺寸改变
+  - 通过`display: none`隐藏 DOM 节点
+  - ...
+
+- 重绘（Paint）：几何属性不受影响。触发因素：
+  - 重排必触发重绘
+  - 通过`visibility: hidden`隐藏 DOM 节点
+  - 修改元素背景色、字体颜色
+  - ...
+
+解决方案：启用 GPU 加速，并通过 CSS 属性`will-change`将可变元素提升至单独图层（可在 devtools -> Customize and control devtools -> layers 中查看）
+
+## 替换元素与内联元素块
+
+- **替换元素（replaced element）**包括：`<img>`、`<button>`、`<video>`、`<input>`、`<object>`等
+
+- **内联元素块**包括：替换元素、`inline-block`/`inline-table`元素
+
+## CSS direction 和 writing-mode 属性
+
+- writing-mode 属性主要用于控制文本布局，通过依次指定内联元素在块级容器中的流动方向和块流动方向来实现。关键字值：`horizontal-tb`（默认）、`vertical-rl`（古典中文）、`vertical-lr`。由于其可能将默认的水平流改为垂直流，因而可能产生诸如：水平方向 margin 合并、`margin:auto`实现块级元素垂直居中等效果
+
+- direction 属性用于改变内联元素块（包括表格列）在容器内的水平排列顺序，如`rtl`对应右对齐、从右往左排列（部分场景下可替代`float:right`）。注：
+
+  - 设为`rtl`时文字默认右对齐（受`text-align`默认值`start`影响），但呈现顺序不变（除非以`<span>`包裹并设置`display:inline-block;`）
+
+  - 若要文字顺序也相应改变，须额外设置`unicode-bidi:bidi-override;`（默认为`normal`）
+
+  <!-- - 若浏览器不支持 CSS3`text-align:start/end`（IE），则`direction`值将影响`text-align`的初始值：`ltr`对应`left`，`rtl`对应`right` -->
+
+  - 可通过`<html>`的`dir`特性全局设置：
+
+    - 从左往右的语言（其他大多数）应设为`ltr`（默认值）
+
+    - 从右往左的语言（希伯来语或阿拉伯语）应设为`rtl`
+
+注：writing-mode 与 direction 效果上并无交集，后者仅在前者指定的内联元素横/纵流动方向上改变其排列顺序而已

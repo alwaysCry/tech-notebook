@@ -1,18 +1,66 @@
-# package.json 配置解读
+# package.json 部分属性解读
 
-package.json 配置可分为 7 大类：描述配置、文件配置、脚本配置、依赖配置、发布配置、系统配置、第三方配置
+<!-- name、version、repository、description、keywords、homepage、bugs、license  -->
 
-## 描述配置
+## name
 
-name、version、repository、description、keywords、homepage、bugs、license 暂不具体描述
+定义项目（包）名。规则如下：
 
-## 文件配置
+- 不得多于 214 个字符（包含`@<scope>/`前缀在内）
 
-### files
+- 不得以`.`、`_`开头，且不得包含大写字母
 
-进行 npm 发布时，默认包括 package.json、license、README 和 main 字段指定的文件；忽略 node_modules、lockfile 等文件
+- 只允许使用 URL-safe 字符
 
-在此基础上可通过 files 指定更多：可为单独文件、目录、或通配符。例如：
+## version
+
+定义项目（包）的当前版本号
+
+## description
+
+定义项目（包）的简要描述。registry 将提取该信息以方便搜索
+
+## keywords
+
+定义项目（包）的关键字描述。registry 将提取该信息以方便检索
+
+## license
+
+<!-- TODO -->
+
+## homepage
+
+项目（包）的主页/文档地址
+
+## bugs
+
+项目（包）的问题汇报页面地址或相关 email
+
+## repository
+
+项目（包）所在的源代码管理仓库地址
+
+## author
+
+项目（包）的作者信息。形如：
+
+```json
+{
+	"author"：{
+		"name":"<name>",
+		"email":"<email>",
+		"url":"<homepage-url>",
+	}
+}
+```
+
+## contributors
+
+项目（包）的贡献者信息。一般为数组形式，元素格式同 author
+
+## files
+
+指定作为包发布（publish）至 registry 时上传的文件，可包含目录和通配符。形如：
 
 ```json
 {
@@ -20,115 +68,109 @@ name、version、repository、description、keywords、homepage、bugs、license
 }
 ```
 
-一般 files 会指定构建产物及类型文件，而 src、test 等目录下文件无需跟随发布
+要点：
 
-:::tip
-罗列在模块根目录下 .npmignore 中的文件，即使被写入 files 中也会被排除发布
+- 通常包含构建产物及相关类型文件，而 src、test 等目录下文件无需一同发布
 
-.npmignore 原理与.gitnore 类似，若缺少前者，则默认将使用后者的内容
-:::
+- package.json、license、README 以及`package.json#main`指定的文件将被默认包含
 
-### type
+- node_modules、lockfile 等文件将被默认忽略
 
-node 默认要求 ES 模块采用 .mjs 后缀，若不想修改，则可指定 type 为 module；此时若想使用 CommonJS 模块，则需将相应后缀名改为 .cjs
+- .npmignore 中所列文件即便位于 files 中也会被排除，其格式与.gitignore 类似。且若项目中缺少.npmignore，则默认将使用.gitignore 的内容
 
-### main
+## type
 
-main 字段指定项目入口文件（默认为根目录下的 index.js）， browser 和 Node 环境（此处及以下的环境指的是 webpack 中的 target？？？）中都可用
+指定 Node.js 以何种模块化形式解析`.js`后缀文件。可选值：
 
-例如 packageA 的 main 字段指定为 index.js，则其被引用时实际引入的是 `node_modules/packageA/index.js`
+- `"commonjs"`：默认值，视为 CommonJS
 
-在早期只有 CommonJS 规范时，此为指定项目入口的唯一属性
+- `"module"`：视为 ESM
 
-### browser
+注：不论该字段为何值，`.cjs`后缀文件始终视为 CommonJS，`.mjs`后缀文件始终视为 ESM
 
-main 字段指定的入口文件在 browser 和 Node 中都可用。但若只想在 web 端使用，则可通过 browser 字段指定入口。如：`{ "browser": "./browser/index.js" }`
+## main
 
-browser 字段的指向通常为 IIFE 或 UMD 模块文件，并且依赖于浏览器环境的全局变量(如 window)
+指定包作为 CommonJS 被引入时的入口文件路径（默认为包目录下的`./index.js` ）
 
-### module
+## module
 
-module 字段用于指定 ES 模块的入口文件。当一项目同时定义 main、browser 和 module，而 webpack、rollup 等构建工具会感知前者，并根据环境及不同的模块规范来进行相应的入口文件查找
+指定包作为 ESM 被引入时的入口文件路径。该属性仅被现代化构建工具感知，node.js 的包引入机制会将其忽略，后者仅参考 main 和 exports
 
-```json
-{
-	"main": "./index.js",
-	"browser": "./browser/index.js",
-	"module": "./index.mjs"
-}
-```
+## browser
 
-例如 webpack 构建时默认 target 为 web，即 Web 构建。其 resolve.mainFields 配置默认为 ['browser', 'module', 'main']，即按 browser -> module -> main 顺序查找入口文件
+指定包被用于构建浏览器端产物时的入口文件地址。该属性仅被构建工具感知，且其指向文件通常为 IIEF 或 UMD 形式
 
-### exports
+## exports
 
-node 14.13 支持。用于配置不同环境对应的模块入口，并且当其存在时优先级最高
+按最高优先级定义包的公共入口。具体如下：
 
-例如用 require 和 import 根据模块规范分别定义入口：
+- 允许定义多个入口。形如：
 
 ```json
 {
 	"exports": {
-		"require": "./index.js",
-		"import": "./index.mjs"
+		/* 对应包名引入 */
+		".": "./lib/index.js",
+		/* 对应包子路径引入，如 import <pkg> from '<pkg-name>/lib' */
+		"./lib": "./lib/index.js",
+		/**
+		 * 支持路径通配符 *，后者可被展开为任意子路径而不仅限于文件名
+		 * 此处设定 .js 后缀则限定了只导出 js 文件
+		 */
+		"./feature/*.js": "./feature/*.js",
+		/* 通过此方式限制某个子路径下的包导出 */
+		"./feature/private-internal/*": null,
+		/* 一些 UI 包可能需要引入部分样式才能正常使用 */
+		"./style": "./dist/css/index.css",
+		"./package.json": "./package.json"
 	}
 }
 ```
 
-该配置在使用 `import xxx` 和 `require('xxx')` 时会从不同入口引入文件（exports 还支持 browser 和 node 字段定义对应环境中的入口）。等同于：
+- 提供不同环境下的情景导出，当作为 Node.js 包被引用时：
 
-```json
-{
-	"exports": {
-		".": {
-			"require": "./index.js",
-			"import": "./index.mjs"
-		}
-	}
-}
-```
+  ```json
+  {
+  	"exports": {
+  		/* 按 ESM 引入时的包入口 */
+  		"import": "./index-module.js",
+  		/* 按 CommonJS 引入时的包入口 */
+  		"require": "./index-require.js"
+  	}
+  }
+  ```
 
-加了一个 “.” 层级是因为 exports 除支持配置包的默认导出，还支持配置包的子路径：
+  现代化构建工具如何处理则可参见：
 
-比如一些三方 UI 包需引入对应样式文件才能正常使用：`import packageA/dist/css/index.css;`，此时就可用 exports 封装文件路径：
+  - [vite#resolve.conditions](https://cn.vitejs.dev/config/shared-options.html#resolve-conditions)
+  - [webpack#Package exports](https://www.webpackjs.com/guides/package-exports/)
 
-```json
-{
-	"exports": {
-		"./style": "./dist/css/index.css"
-	}
-}
-```
+注意：
 
-则用户引入时只需：`import packageA/style;`
+- 对于 Node.js v14 以及大多数现代化构建工具而言，其优先级高于 main
 
-除封装导出文件路径，exports 还限制使用者访问未在其中定义的任何其他路径。如发布的 dist 文件中有内部模块 dist/internal/module ，被单独引入使用可导致主模块不可用，为了限制外部使用，便可不在 exports 定义这些模块的路径，此时外部引入诸如 packageA/dist/internal/module 模块就会报错
+- 未在 exports 中被显式定义的入口（含 package.json）将无法被引入
 
-综合上述知识，就很容易理解 vite 官方推荐的三方库入口文件定义了：
+- 若 exports 中仅包含`.`属性，则可将其简写。例如：
 
-![](http://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/51da620966234db3ad13f6a0f40414e7~tplv-k3u1fbpfcp-zoom-in-crop-mark:4536:0:0:0.awebp?)
+  ```json
+  {
+  	"exports": {
+  		".": "./index.js"
+  	}
+  	/**
+  	 * 可被简写为:
+  	 *
+  	 * "exports":"./index.js"
+  	 */
+  }
+  ```
 
-### workspaces
+- 直接引入 node_modules 目录下对应的包文件依然是可行的，如`require(<path-to-node_modules>/<pkg>/<file>.js)`
 
-项目工作区配置，用于在本地根目录下管理多个子项目。可在 npm install 时自动将 workspaces 下的包软链到根目录 node_modules 中，无需手动执行 npm link
+## workspaces
 
-该字段接收一个数组，内部可为目录名或通配符。例如：
-
-```json
-{
-	"workspaces": ["workspace-a"]
-}
-```
-
-表示 workspace-a 目录下有一项目，也有自己的 package.json
-
-```
-package.json
-workspace-a
-  └── package.json
-```
-
-但通常子项目都会平铺在 packages 目录下，所以根目录下 workspaces 通常配置为：
+指定项目的 workspaces 目录，具体[参见](https://classic.yarnpkg.com/en/docs/workspaces/)，接受通配符。形如：
 
 ```json
 {
@@ -136,9 +178,9 @@ workspace-a
 }
 ```
 
-### directories
+## directories
 
-CommonJs 时代常用，其主要作用为提供元信息，其子字段均为指向不同目录的字符串：
+提供项目（包）元信息，常用子字段如下：
 
 - lib：有关库在包中的确切位置
 - bin：所有可执行文件所在的目录，可用于代替具有 bin 属性
@@ -147,33 +189,9 @@ CommonJs 时代常用，其主要作用为提供元信息，其子字段均为�
 - example：有关示例代码的目录
 - test：有关测试文件所在目录
 
-## 脚本配置
+## bin
 
-### scripts
-
-指定项目内置脚本命令，可通过 npm run 来执行。通常包含项目开发、构建等 CI 命令
-
-除指定基础命令，还可配合 pre 和 post 完成命令的前置和后续操作，如下例：
-
-```json
-{
-	"scripts": {
-		"build": "webpack",
-		"prebuild": "xxx", // build 执行之前的钩子
-		"postbuild": "xxx" // build 执行之后的钩子
-	}
-}
-```
-
-则当执行 npm run build 时，会按照 prebuild -> build -> postbuild 顺序依次执行上方命令
-
-当然这样的隐式逻辑很可能造成工作流执行混乱，所以 pnpm 和 yarn2 都已废弃掉了 pre/post 自动执行逻辑，[参见](https://link.juejin.cn/?target=https%3A%2F%2Fgithub.com%2Fpnpm%2Fpnpm%2Fissues%2F2891)。如果需手动开启，pnpm 可设置 `.npmrc > enable-pre-post-scripts=true`
-
-### bin
-
-用于指定每个内部命令对应的可执行文件位置。在编写 node 工具时常会用到（npm 本身也是通过 bin 属性安装为一个可执行命令）
-
-在编写 cli 工具时需指定工具的运行命令。如 webpack 模块，其运行命令即 `webpack`，其 package.json 文件配置如下：
+用于在带有 CLI 的项目（包）中指定相关命令对应的可执行文件。形如：
 
 ```json
 {
@@ -183,41 +201,63 @@ CommonJs 时代常用，其主要作用为提供元信息，其子字段均为�
 }
 ```
 
-全局安装模块时， npm 会为 bin 中配置的文件在 bin 目录下创建软连接（windows 默认会在 C:\Users\username\AppData\Roaming\npm 目录下）
+当其通过包管理工具被安装时：
 
-若局部安装，则软连接创建在项目的 ./node_modules/.bin 目录下。另外，其下的命令都可用 `npm run xxx` 运行，键入 npm run 后按 tab，还会出现提示
+- 全局安装会在`/usr/local/bin`（win 默认`C:\Users\<username>\AppData\Roaming\npm`）目录下创建指向对应可执行文件的软链接
 
-### config
+- 局部安装则将软链接创建在项目的`node_modules/.bin`目录下。对应命令可通过以下方式调用：
 
-用于设置 scripts 内脚本**在运行时**的参数。例如设置 port 为 3001：
+  - `npx <command>`
+
+  - 或出现在`package.json#scripts.<action>`对应的脚本中
+
+## scripts
+
+指定项目级脚本命令，后者可通过`npm run <action>`执行。形如：
 
 ```json
 {
-	"config": {
-		"port": "3001"
+	"scripts": {
+		"<action>": "<command>",
+		"pre<action>": "<pre-command>",
+		"post<action>": "<post-command>"
 	}
 }
 ```
 
-则执行时可以通过 `npm_package_config_port` 变量访问到 3001：
+每个 action 还可通过添加`pre`/`post`前缀定义相应的前置/后续脚本命令，如当执行`npm run build`时会按 prebuild -> build -> postbuild 顺序依次执行相应脚本
 
-```js
-console.log(process.env.npm_package_config_port); // 3001
+注意此类隐式逻辑很可能造成工作流混乱，因而在 pnpm 和 yarn2 中都已废弃，[参见](https://github.com/pnpm/pnpm/issues/2891)。如需手动开启：
+
+- pnpm 中可设置 `.npmrc > enable-pre-post-scripts=true`
+
+## config
+
+为 scripts 脚本设置环境变量。形如：
+
+```json
+{
+	"config": {
+		"<name>": "<value>"
+	}
+}
 ```
 
-## 依赖配置
+脚本执行时可以`$npm_package_config_<name>`形式访问
 
-### dependencies
+## dependencies
 
-运行依赖，即项目生产环境下需用到的，使用 `npm install xxx` 或 `npm install xxx --save` 时自动插入其中
+运行依赖，在生产环境下也会用到
 
-### devDependencies
+## devDependencies
 
-开发依赖，项目开发环境需要而运行时不需要，用于辅助开发
+开发依赖，在生产环境下不会用到。install 命令在以下情况下不会安装 devDependencies：
 
-使用 `npm install xxx -D ` 或者 `npm install xxx --save-dev`
+- 环境变量`NODE_ENV`为`production`时
 
-### peerDependencies
+- 执行 install 命令时附带选项`--production=true`
+
+## peerDependencies
 
 同伴依赖，一种特殊的依赖，不会被自动安装，常用于表示与另一个包的依赖与兼容性关系以警示使用者
 
@@ -234,13 +274,13 @@ console.log(process.env.npm_package_config_port); // 3001
 
 表示若使用 Ant Design，则项目也应安装 react 和 react-dom，且版本需大于等于 16.9.0
 
-### optionalDependencies
+## optionalDependencies
 
 可选依赖，表示依赖不会阻塞主功能的使用，安装或者引入失败也无妨。即使其安装失败，npm 的整个安装过程也是成功的。使用 `npm install xxx -O` 或 `npm install xxx --save-optional` 时自动插入其中
 
 如使用 colors 包来对 console.log 打印信息进行着色来增强和区分提示。它并非必需，所以可以将其列入 optionalDependencies，并在运行时处理引入失败的逻辑
 
-### peerDependenciesMeta
+## peerDependenciesMeta
 
 同伴依赖也可以用 peerDependenciesMeta 将其指定为可选。例如：
 
@@ -257,7 +297,7 @@ console.log(process.env.npm_package_config_port); // 3001
 }
 ```
 
-### bundleDependencies
+## bundleDependencies
 
 打包依赖。其值为数组，在发布包时 bundleDependencies 里面的依赖都会被一并打包
 
@@ -277,7 +317,7 @@ console.log(process.env.npm_package_config_port); // 3001
 
 普通依赖通常从 npm registry 安装，但若想用一个不在 npm registry 里的包或一个被修改过的第三方包，打包依赖会比普通依赖更好用
 
-### overrides
+## overrides
 
 overrides 可以重写项目**依赖的依赖**、**及其依赖树下某个依赖**的版本号，进行包的替换
 
@@ -305,13 +345,11 @@ overrides 可以重写项目**依赖的依赖**、**及其依赖树下某个依�
 
 若要在 yarn 中复写依赖版本号，需使用 resolution 字段；而 pnpm 中则需用 pnpm.overrides 字段
 
-## 发布配置
-
-### private
+## private
 
 若是私有项目，不希望发布至公共 npm 仓库上，可将 private 设为 true
 
-### publishConfig
+## publishConfig
 
 顾名思义，即 npm 包发布时使用的配置
 
@@ -325,11 +363,9 @@ overrides 可以重写项目**依赖的依赖**、**及其依赖树下某个依�
 }
 ```
 
-## 系统配置
+<!-- 与项目关联的系统配置，如 node 版本或操作系统兼容性之类。大多只起到提示，即使用户环境不合要求也不影响依赖安装 -->
 
-与项目关联的系统配置，如 node 版本或操作系统兼容性之类。大多只起到提示，即使用户环境不合要求也不影响依赖安装
-
-### engines
+## engines
 
 一些项目由于兼容性问题会对 node 或包管理器有特定版本号要求。如：
 
@@ -344,7 +380,7 @@ overrides 可以重写项目**依赖的依赖**、**及其依赖树下某个依�
 
 除非设置 engine-strict 标记，否则只充当建议
 
-### os
+## os
 
 linux 正常运行的项目可能在 windows 上会出现异常，使用 os 可以指定项目对操作系统的兼容性要求。例如：
 
@@ -354,7 +390,7 @@ linux 正常运行的项目可能在 windows 上会出现异常，使用 os 可�
 }
 ```
 
-### cpu
+## cpu
 
 指定项目只能在特定的 CPU 体系上运行：
 
@@ -364,11 +400,9 @@ linux 正常运行的项目可能在 windows 上会出现异常，使用 os 可�
 }
 ```
 
-## 第三方配置
+<!-- 一些三方库或应用在内部处理时会依赖这些字段，使用时需要先安装对应三方库 -->
 
-一些三方库或应用在内部处理时会依赖这些字段，使用时需要先安装对应三方库
-
-### types 或 typings
+## types 或 typings
 
 指定 TypeScript 的类型定义的入口文件。例如：
 
@@ -378,15 +412,15 @@ linux 正常运行的项目可能在 windows 上会出现异常，使用 os 可�
 }
 ```
 
-### unpkg
+## unpkg
 
 该字段应指向一文件，unpkg 稍后将为后者提供 CDN 支持，详情[参见](https://unpkg.com/)
 
-### jsdelivr
+## jsdelivr
 
 与 unpkg 类似
 
-### browserslist
+## browserslist
 
 设置项目的浏览器兼容情况。babel 和 autoprefixer 等工具会根据该配置对代码进行转换。当然也可以使用 .browserslistrc 文件单独配置。典型的：
 
@@ -396,7 +430,7 @@ linux 正常运行的项目可能在 windows 上会出现异常，使用 os 可�
 }
 ```
 
-### sideEffects
+## sideEffects
 
 标识某些模块具有副作用，涉及 webpack 的 tree-shaking 优化
 
@@ -416,6 +450,6 @@ import antd/dist/antd.css; // or 'antd/dist/antd.less'
 }
 ```
 
-### lint-staged
+## lint-staged
 
 lint-staged 是用于对 git 暂存区文件进行操作的工具，可在代码提交前执行 lint 校验、类型检查、图片优化等操作，也通常配合 husky 等 git-hooks 工具一起使用。后者用于定义钩子方法，并在 git 工作流中如 pre-commit，commit-msg 时触发，可把 lint-staged 放到这些钩子方法中（？？？）
