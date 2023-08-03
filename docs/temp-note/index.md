@@ -42,7 +42,7 @@ nodemon 的典型配置：
 
 node.js 调试可分为 launch 模式和 attach 模式
 
-launch 模式是本地开发的首选
+launch 模式是本地开发的首选...
 
 attach 模式适用于线上调试
 
