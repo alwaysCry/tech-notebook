@@ -1,5 +1,49 @@
 # 临时收纳处
 
+## nodemon
+
+nodemon 的典型配置：
+
+```json
+// nodemon.json
+{
+	"restartable": "rs",
+	"ignore": [".git", "node_modules/", "dist/", "coverage/"],
+	"watch": ["src/"],
+	"execMap": {
+		"ts": "node -r ts-node/register"
+	},
+	"env": {
+		"NODE_ENV": "development"
+	},
+	"ext": "js,json,ts"
+}
+```
+
+- restartable:用于手动重启程序的命令（按回车键执行）
+
+- ignore: 须忽略的文件 pattern
+
+- watch：须监听改动的文件所在**目录**
+
+- execMap：文件扩展名与启动指令间的映射
+
+- env：要包含的变量
+
+- ext：监听的文件扩展名
+
+## node.js inspect 模式
+
+- `node --inspect <source>`：立即以审查模式启动 node 进程，调试器（debugger）可随时连接
+
+- `node --inspect-brk <source>`：先暂停等待调试器连接后才启动
+
+## node.js 调试相关
+
+node.js 调试可分为 launch 模式和 attach 模式
+
+launch 模式是本地开发的首选 ...
+
 ## Vscode task 功能
 
 部分任务会被自动检测，如 npm scripts、tsc 相关命令等。在命名面板中输入`run tasks`后便会罗列
